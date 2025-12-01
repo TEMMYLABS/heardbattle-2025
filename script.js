@@ -1,5 +1,5 @@
 // ===== КОНФИГУРАЦИЯ =====
-const API_URL = 'https://script.google.com/macros/s/AKfycbxSnTMn4s3DfRbq0SuxkRBpUifrtQQoacHEFYiGexBOAfm0n41SIUK6-rRVnkLT7x8hkw/exec';
+const API_URL = 'https://script.google.com/macros/s/AKfycbxH3-C1OkH6snl34hIu_t4ck--TOvvF83ZqMogOYSoP/dev';
 const SKIPS_PER_HOUR = 5;
 
 // ===== ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ =====
@@ -103,18 +103,30 @@ function initializeEventListeners() {
 // ===== API ВЗАИМОДЕЙСТВИЕ =====
 async function callAPI(action, params = {}) {
     try {
+        // Добавляем action в параметры
         params.action = action;
-        const query = new URLSearchParams(params).toString();
-        const response = await fetch(`${API_URL}?${query}`);
         
-        if (!response.ok) throw new Error('Network error');
+        // Формируем URL с параметрами
+        const queryString = new URLSearchParams(params).toString();
+        const url = `${API_URL}?${queryString}`;
+        
+        console.log('📡 API Call:', action, params);
+        
+        // Делаем запрос
+        const response = await fetch(url);
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
         
         const data = await response.json();
+        console.log('✅ API Response:', data);
         return data;
+        
     } catch (error) {
-        console.error('API Error:', error);
+        console.error('❌ API Error:', error);
         showNotification('Ошибка соединения с сервером', 'error');
-        return { error: 'Network error' };
+        return { error: 'Network error: ' + error.message };
     }
 }
 
@@ -136,7 +148,7 @@ async function handleLogin() {
         currentUser = {
             id: result.userId,
             nickname: nickname,
-            points: result.points
+            points: result.points || 5
         };
         
         localStorage.setItem('heartbattle_user', JSON.stringify(currentUser));
@@ -157,8 +169,8 @@ async function handleRegister() {
         return;
     }
     
-    if (nickname.length < 3) {
-        showNotification('Никнейм должен быть не менее 3 символов', 'error');
+    if (nickname.length < 2) {
+        showNotification('Никнейм должен быть не менее 2 символов', 'error');
         return;
     }
     
@@ -170,11 +182,11 @@ async function handleRegister() {
         currentUser = {
             id: result.userId,
             nickname: nickname,
-            points: result.points
+            points: result.points || 5
         };
         
         localStorage.setItem('heartbattle_user', JSON.stringify(currentUser));
-        showNotification(`Регистрация успешна! Получено ${result.points} баллов`, 'success');
+        showNotification(`Регистрация успешна! Получено ${result.points || 5} баллов`, 'success');
         switchToBattleScreen();
         loadProfile();
     } else {
@@ -184,18 +196,29 @@ async function handleRegister() {
 
 // ===== ЗАГРУЗКА ПРОФИЛЯ =====
 async function loadProfile() {
-    if (!currentUser) return;
+    if (!currentUser) {
+        showNotification('Сначала войдите в систему', 'error');
+        return;
+    }
     
     showNotification('Ищем нового участника...', 'info');
     
     const result = await callAPI('get_profiles', { userId: currentUser.id });
     
     if (result.error) {
-        elements.profileName.textContent = 'Анкеты закончились';
-        elements.profileDescription.textContent = 'Все участники оценены! Загляни позже.';
+        // Нет анкет или ошибка
+        elements.profileName.textContent = 'Анкеты временно отсутствуют';
+        elements.profileDescription.textContent = 'Все участники оценены или произошла ошибка. Попробуйте позже.';
         elements.imagePlaceholder.style.display = 'flex';
         elements.profileImage.style.display = 'none';
+        elements.profileRating.textContent = '0';
         currentProfile = null;
+        
+        // Обновляем прогресс бар
+        elements.progressPercent.textContent = '0%';
+        elements.progressFill.style.width = '0%';
+        
+        showNotification(result.error, 'error');
         return;
     }
     
@@ -208,24 +231,35 @@ async function loadProfile() {
     elements.profileDescription.textContent = result.description || 'Описание отсутствует';
     
     // Обновляем изображение
-    if (result.photoUrl) {
-        elements.profileImage.src = result.photoUrl;
-        elements.profileImage.style.display = 'block';
-        elements.imagePlaceholder.style.display = 'none';
-        
-        // Анимация появления изображения
-        elements.profileImage.style.opacity = '0';
-        setTimeout(() => {
-            elements.profileImage.style.transition = 'opacity 0.5s ease';
-            elements.profileImage.style.opacity = '1';
-        }, 100);
+    if (result.photoUrl && result.photoUrl.startsWith('http')) {
+        // Создаем новое изображение для предзагрузки
+        const img = new Image();
+        img.onload = () => {
+            elements.profileImage.src = result.photoUrl;
+            elements.profileImage.style.display = 'block';
+            elements.imagePlaceholder.style.display = 'none';
+            
+            // Анимация появления
+            elements.profileImage.style.opacity = '0';
+            setTimeout(() => {
+                elements.profileImage.style.transition = 'opacity 0.5s ease';
+                elements.profileImage.style.opacity = '1';
+            }, 100);
+        };
+        img.onerror = () => {
+            // Если изображение не загрузилось
+            elements.imagePlaceholder.style.display = 'flex';
+            elements.profileImage.style.display = 'none';
+        };
+        img.src = result.photoUrl;
     } else {
+        // Нет валидного URL изображения
         elements.imagePlaceholder.style.display = 'flex';
         elements.profileImage.style.display = 'none';
     }
     
-    // Обновляем прогресс бар
-    const rating = Math.max(0, (result.rating || 0) + 50); // Приводим к шкале 0-100
+    // Обновляем прогресс бар (рейтинг от 0 до 100)
+    const rating = Math.max(0, (result.rating || 0) + 50); // Преобразуем к шкале 0-100
     const percent = Math.min(100, Math.max(0, rating));
     elements.progressPercent.textContent = `${percent}%`;
     elements.progressFill.style.width = `${percent}%`;
@@ -282,13 +316,18 @@ async function handleVote(voteType) {
 
 // ===== ПРОПУСК =====
 async function handleSkip() {
-    if (!currentUser || !currentProfile) return;
+    if (!currentUser || !currentProfile) {
+        showNotification('Сначала загрузите профиль', 'error');
+        return;
+    }
     
     // Проверяем лимит пропусков
     checkSkipReset();
     if (skipsUsed >= SKIPS_PER_HOUR) {
         const nextReset = new Date(lastSkipReset + 3600000);
-        showNotification(`Лимит пропусков! Следующий сброс в ${nextReset.getHours()}:${nextReset.getMinutes()}`, 'error');
+        const hours = nextReset.getHours().toString().padStart(2, '0');
+        const minutes = nextReset.getMinutes().toString().padStart(2, '0');
+        showNotification(`Лимит пропусков! Следующий сброс в ${hours}:${minutes}`, 'error');
         return;
     }
     
@@ -296,24 +335,29 @@ async function handleSkip() {
     elements.skipBtn.style.transform = 'scale(0.95)';
     setTimeout(() => elements.skipBtn.style.transform = '', 200);
     
-    skipsUsed++;
-    elements.skipCount.textContent = SKIPS_PER_HOUR - skipsUsed;
-    localStorage.setItem('heartbattle_skips', JSON.stringify({
-        used: skipsUsed,
-        reset: lastSkipReset
-    }));
+    showNotification('Пропускаем профиль...', 'info');
     
-    showNotification(`Пропущено! Осталось пропусков: ${SKIPS_PER_HOUR - skipsUsed}`, 'info');
-    
-    await callAPI('skip', {
+    const result = await callAPI('skip', {
         userId: currentUser.id,
         profileId: currentProfile.profileId
     });
     
-    updateStats('skip');
-    
-    // Загружаем следующий профиль
-    setTimeout(() => loadProfile(), 500);
+    if (result.success) {
+        skipsUsed++;
+        elements.skipCount.textContent = SKIPS_PER_HOUR - skipsUsed;
+        localStorage.setItem('heartbattle_skips', JSON.stringify({
+            used: skipsUsed,
+            reset: lastSkipReset
+        }));
+        
+        updateStats('skip');
+        showNotification(`Пропущено! Осталось пропусков: ${SKIPS_PER_HOUR - skipsUsed}`, 'info');
+        
+        // Загружаем следующий профиль
+        setTimeout(() => loadProfile(), 500);
+    } else {
+        showNotification(result.error || 'Ошибка пропуска', 'error');
+    }
 }
 
 // ===== СТАТИСТИКА =====
@@ -363,6 +407,12 @@ function switchToBattleScreen() {
     }
     
     elements.skipCount.textContent = SKIPS_PER_HOUR - skipsUsed;
+    
+    // Сбрасываем статистику
+    elements.totalVotes.textContent = '0';
+    elements.likesCount.textContent = '0';
+    elements.dislikesCount.textContent = '0';
+    elements.skipsCount.textContent = '0';
 }
 
 function handleLogout() {
@@ -390,12 +440,15 @@ function showNotification(message, type = 'info') {
     switch(type) {
         case 'success':
             notification.style.borderLeft = '4px solid #64ff64';
+            notification.style.background = 'rgba(100, 255, 100, 0.1)';
             break;
         case 'error':
             notification.style.borderLeft = '4px solid #ff6464';
+            notification.style.background = 'rgba(255, 100, 100, 0.1)';
             break;
         case 'info':
-            notification.style.borderLeft = '4px solid #6464ff';
+            notification.style.borderLeft = '4px solid #6495ff';
+            notification.style.background = 'rgba(100, 149, 255, 0.1)';
             break;
     }
     
@@ -449,6 +502,8 @@ function checkSkipReset() {
             used: skipsUsed,
             reset: lastSkipReset
         }));
+        
+        showNotification('Лимит пропусков сброшен!', 'info');
     }
 }
 
@@ -464,23 +519,43 @@ function updatePreviewStats() {
     setTimeout(updatePreviewStats, 60000);
 }
 
-// ===== ТАЙПИНГ АНИМАЦИЯ ДЛЯ ЗАГРОВКА =====
-function startTypingAnimation() {
-    const title = document.querySelector('.title');
-    const originalText = title.textContent;
-    title.textContent = '';
-    
-    let i = 0;
-    function typeChar() {
-        if (i < originalText.length) {
-            title.textContent += originalText.charAt(i);
-            i++;
-            setTimeout(typeChar, 100);
-        }
+// ===== АВТОМАТИЧЕСКИЕ ДЕЙСТВИЯ =====
+
+// Проверяем баллы каждые 30 секунд
+setInterval(() => {
+    if (currentUser) {
+        callAPI('get_user_points', { userId: currentUser.id })
+            .then(result => {
+                if (result.success && result.points !== currentUser.points) {
+                    animateValue(elements.pointsCount, currentUser.points, result.points, 500);
+                    currentUser.points = result.points;
+                    localStorage.setItem('heartbattle_user', JSON.stringify(currentUser));
+                }
+            });
     }
+}, 30000);
+
+// Проверяем сброс пропусков каждые 5 минут
+setInterval(checkSkipReset, 300000);
+
+// ===== ТЕСТОВЫЕ ФУНКЦИИ ДЛЯ ОТЛАДКИ =====
+window.testAPI = function() {
+    console.log('=== ТЕСТ API ===');
+    console.log('Текущий пользователь:', currentUser);
+    console.log('Текущий профиль:', currentProfile);
     
-    typeChar();
-}
+    // Тестовые запросы
+    callAPI('test', {}).then(console.log);
+    
+    if (currentUser) {
+        callAPI('get_user_points', { userId: currentUser.id }).then(console.log);
+    }
+};
+
+window.clearStorage = function() {
+    localStorage.clear();
+    location.reload();
+};
 
 // Запускаем анимацию при загрузке
 window.addEventListener('load', startTypingAnimation);
