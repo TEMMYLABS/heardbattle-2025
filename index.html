@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HEARDBATTLE 2025</title>
+    <style>
+        /* HEARDBATTLE STYLE */
+        :root {
+            --black: #000000;
+            --white: #ffffff;
+            --gray-dark: #111111;
+            --gray-light: #222222;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            background: var(--black);
+            color: var(--white);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            width: 100%;
+        }
+        
+        .logo {
+            font-size: 72px;
+            font-weight: 900;
+            letter-spacing: -3px;
+            margin-bottom: 20px;
+            color: var(--white);
+        }
+        
+        .year {
+            font-size: 24px;
+            opacity: 0.5;
+            margin-left: 10px;
+        }
+        
+        .subtitle {
+            font-size: 20px;
+            opacity: 0.7;
+            margin-bottom: 40px;
+            letter-spacing: 2px;
+        }
+        
+        .battle-types {
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+            margin: 40px 0;
+        }
+        
+        .battle-card {
+            background: var(--gray-dark);
+            border: 1px solid var(--gray-light);
+            border-radius: 10px;
+            padding: 30px;
+            width: 300px;
+            transition: transform 0.3s;
+        }
+        
+        .battle-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--white);
+        }
+        
+        .battle-icon {
+            font-size: 40px;
+            margin-bottom: 15px;
+        }
+        
+        .battle-title {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        
+        .battle-desc {
+            font-size: 14px;
+            opacity: 0.6;
+            margin-bottom: 20px;
+        }
+        
+        .status {
+            background: var(--gray-dark);
+            padding: 12px 24px;
+            border-radius: 20px;
+            display: inline-block;
+            margin: 20px 0;
+            font-size: 14px;
+            border: 1px solid var(--gray-light);
+        }
+        
+        .table-info {
+            background: var(--gray-dark);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 40px;
+            border: 1px solid var(--gray-light);
+        }
+        
+        .table-id {
+            font-family: monospace;
+            background: var(--black);
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            word-break: break-all;
+            font-size: 14px;
+        }
+        
+        .btn {
+            background: var(--white);
+            color: var(--black);
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: all 0.3s;
+        }
+        
+        .btn:hover {
+            background: var(--gray-light);
+            color: var(--white);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            HEARDBATTLE<span class="year">2025</span>
+        </div>
+        
+        <div class="subtitle">
+            ОПРЕДЕЛИМ ЛУЧШУЮ ДЕВОЧКУ И ЛУЧШЕГО ПАРНЯ ГОДА
+        </div>
+        
+        <div class="status">
+            🚀 СТАТУС: РАЗРАБОТКА | ТАБЛИЦА ПОДКЛЮЧЕНА
+        </div>
+        
+        <div class="battle-types">
+            <div class="battle-card">
+                <div class="battle-icon">👑</div>
+                <div class="battle-title">ЛУЧШАЯ ДЕВОЧКА 2025</div>
+                <div class="battle-desc">Голосуй за лучшую девочку года</div>
+                <div style="font-size: 12px; opacity: 0.5;">Категория: GIRLS</div>
+            </div>
+            
+            <div class="battle-card">
+                <div class="battle-icon">👑</div>
+                <div class="battle-title">ЛУЧШИЙ ПАРЕНЬ 2025</div>
+                <div class="battle-desc">Голосуй за лучшего парня года</div>
+                <div style="font-size: 12px; opacity: 0.5;">Категория: BOYS</div>
+            </div>
+        </div>
+        
+        <div class="table-info">
+            <div style="font-size: 14px; opacity: 0.6; margin-bottom: 10px;">
+                📊 GOOGLE SHEETS ДАННЫЕ:
+            </div>
+            <div class="table-id">
+                1R_cnve7dEk1MeqglL5VMIjHFOBZ1IhxgN-OaX29G5fI
+            </div>
+            <div style="font-size: 12px; opacity: 0.4; margin-top: 10px;">
+                Таблица готова. Следующий шаг: Google Apps Script
+            </div>
+        </div>
+        
+        <button class="btn" onclick="nextStep()">
+            ПЕРЕЙТИ К РАЗРАБОТКЕ
+        </button>
+    </div>
+
+    <script>
+        // ID вашей таблицы
+        const SPREADSHEET_ID = '1R_cnve7dEk1MeqglL5VMIjHFOBZ1IhxgN-OaX29G5fI';
+        
+        function nextStep() {
+            alert('✅ Таблица подключена!\n\nID: ' + SPREADSHEET_ID + '\n\nСледующий шаг:\n1. Настроить Google Apps Script\n2. Создать фронтенд для голосования');
+            
+            // Сохраняем в консоль для разработки
+            console.log('HEARDBATTLE 2025 Project:');
+            console.log('- Spreadsheet ID:', SPREADSHEET_ID);
+            console.log('- Next: Create Google Apps Script backend');
+        }
+        
+        // Автоматическое обновление статуса
+        const statuses = [
+            '🚀 СТАТУС: РАЗРАБОТКА | ТАБЛИЦА ПОДКЛЮЧЕНА',
+            '⚡ СТАТУС: ДЕВОЧКИ vs ПАРНИ | ГОЛОСОВАНИЕ',
+            '🎭 СТАТУС: КАТЕГОРИИ | БАЛЛЫ | СКИПЫ',
+            '🏆 СТАТУС: ПОБЕДИТЕЛИ 2025 ГОДА'
+        ];
+        
+        let currentStatus = 0;
+        const statusElement = document.querySelector('.status');
+        
+        setInterval(() => {
+            currentStatus = (currentStatus + 1) % statuses.length;
+            statusElement.textContent = statuses[currentStatus];
+        }, 3000);
+    </script>
+</body>
+</html>
