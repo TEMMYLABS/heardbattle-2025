@@ -3,220 +3,189 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HEARDBATTLE 2025</title>
-    <style>
-        /* HEARDBATTLE STYLE */
-        :root {
-            --black: #000000;
-            --white: #ffffff;
-            --gray-dark: #111111;
-            --gray-light: #222222;
-        }
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: 'Arial', sans-serif;
-            background: var(--black);
-            color: var(--white);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            padding: 20px;
-        }
-        
-        .container {
-            max-width: 800px;
-            width: 100%;
-        }
-        
-        .logo {
-            font-size: 72px;
-            font-weight: 900;
-            letter-spacing: -3px;
-            margin-bottom: 20px;
-            color: var(--white);
-        }
-        
-        .year {
-            font-size: 24px;
-            opacity: 0.5;
-            margin-left: 10px;
-        }
-        
-        .subtitle {
-            font-size: 20px;
-            opacity: 0.7;
-            margin-bottom: 40px;
-            letter-spacing: 2px;
-        }
-        
-        .battle-types {
-            display: flex;
-            gap: 30px;
-            justify-content: center;
-            margin: 40px 0;
-        }
-        
-        .battle-card {
-            background: var(--gray-dark);
-            border: 1px solid var(--gray-light);
-            border-radius: 10px;
-            padding: 30px;
-            width: 300px;
-            transition: transform 0.3s;
-        }
-        
-        .battle-card:hover {
-            transform: translateY(-5px);
-            border-color: var(--white);
-        }
-        
-        .battle-icon {
-            font-size: 40px;
-            margin-bottom: 15px;
-        }
-        
-        .battle-title {
-            font-size: 24px;
-            margin-bottom: 10px;
-        }
-        
-        .battle-desc {
-            font-size: 14px;
-            opacity: 0.6;
-            margin-bottom: 20px;
-        }
-        
-        .status {
-            background: var(--gray-dark);
-            padding: 12px 24px;
-            border-radius: 20px;
-            display: inline-block;
-            margin: 20px 0;
-            font-size: 14px;
-            border: 1px solid var(--gray-light);
-        }
-        
-        .table-info {
-            background: var(--gray-dark);
-            padding: 20px;
-            border-radius: 10px;
-            margin-top: 40px;
-            border: 1px solid var(--gray-light);
-        }
-        
-        .table-id {
-            font-family: monospace;
-            background: var(--black);
-            padding: 10px;
-            border-radius: 5px;
-            margin: 10px 0;
-            word-break: break-all;
-            font-size: 14px;
-        }
-        
-        .btn {
-            background: var(--white);
-            color: var(--black);
-            border: none;
-            padding: 15px 30px;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            margin-top: 20px;
-            transition: all 0.3s;
-        }
-        
-        .btn:hover {
-            background: var(--gray-light);
-            color: var(--white);
-        }
-    </style>
+    <title>HEARDBATTLE | Битва сердец</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
+    <!-- Фон с анимацией частиц -->
+    <div class="particles-background"></div>
+    
+    <!-- Основной контейнер -->
     <div class="container">
-        <div class="logo">
-            HEARDBATTLE<span class="year">2025</span>
-        </div>
-        
-        <div class="subtitle">
-            ОПРЕДЕЛИМ ЛУЧШУЮ ДЕВОЧКУ И ЛУЧШЕГО ПАРНЯ ГОДА
-        </div>
-        
-        <div class="status">
-            🚀 СТАТУС: РАЗРАБОТКА | ТАБЛИЦА ПОДКЛЮЧЕНА
-        </div>
-        
-        <div class="battle-types">
-            <div class="battle-card">
-                <div class="battle-icon">👑</div>
-                <div class="battle-title">ЛУЧШАЯ ДЕВОЧКА 2025</div>
-                <div class="battle-desc">Голосуй за лучшую девочку года</div>
-                <div style="font-size: 12px; opacity: 0.5;">Категория: GIRLS</div>
+        <!-- Заголовок с анимацией печатания -->
+        <header class="header">
+            <h1 class="title typing-animation">
+                <span class="gradient-text">HEART</span>BATTLE
+            </h1>
+            <p class="subtitle">Кто самый популярный в школе?</p>
+            <div class="pulse-dot"></div>
+        </header>
+
+        <!-- Основной контент -->
+        <main class="main-content">
+            <!-- Экран авторизации -->
+            <div id="authScreen" class="screen active">
+                <div class="card auth-card fade-in">
+                    <div class="card-header">
+                        <h2><i class="fas fa-key"></i> Вход в битву</h2>
+                        <p class="card-subtitle">Введи ник и код доступа</p>
+                    </div>
+                    
+                    <div class="form-group">
+                        <div class="input-with-icon">
+                            <i class="fas fa-user"></i>
+                            <input type="text" id="nicknameInput" placeholder="Твой уникальный никнейм" autocomplete="off">
+                        </div>
+                        <div class="hint">Будет виден всем участникам</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <div class="input-with-icon">
+                            <i class="fas fa-ticket-alt"></i>
+                            <input type="text" id="codeInput" placeholder="Код доступа" autocomplete="off">
+                        </div>
+                        <div class="hint">Получи у организатора</div>
+                    </div>
+                    
+                    <div class="button-group">
+                        <button id="loginBtn" class="btn btn-primary">
+                            <i class="fas fa-sign-in-alt"></i> Войти в битву
+                        </button>
+                        <button id="registerBtn" class="btn btn-secondary">
+                            <i class="fas fa-user-plus"></i> Новая регистрация
+                        </button>
+                    </div>
+                    
+                    <div class="stats-preview">
+                        <div class="stat">
+                            <i class="fas fa-users"></i>
+                            <span id="onlineCount">0</span> онлайн
+                        </div>
+                        <div class="stat">
+                            <i class="fas fa-trophy"></i>
+                            <span id="battleCount">0</span> дуэлей
+                        </div>
+                    </div>
+                </div>
             </div>
-            
-            <div class="battle-card">
-                <div class="battle-icon">👑</div>
-                <div class="battle-title">ЛУЧШИЙ ПАРЕНЬ 2025</div>
-                <div class="battle-desc">Голосуй за лучшего парня года</div>
-                <div style="font-size: 12px; opacity: 0.5;">Категория: BOYS</div>
+
+            <!-- Экран голосования -->
+            <div id="battleScreen" class="screen">
+                <!-- Шапка с баллами -->
+                <div class="battle-header slide-down">
+                    <div class="user-info">
+                        <div class="avatar">
+                            <i class="fas fa-crown"></i>
+                        </div>
+                        <div class="user-details">
+                            <h3 id="userNickname">Никнейм</h3>
+                            <div class="points-display">
+                                <i class="fas fa-coins"></i>
+                                <span id="pointsCount">5</span> баллов
+                            </div>
+                        </div>
+                    </div>
+                    <button id="logoutBtn" class="btn btn-ghost">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </button>
+                </div>
+
+                <!-- Карточка анкеты -->
+                <div class="card profile-card">
+                    <div class="profile-header">
+                        <div class="profile-rating">
+                            <i class="fas fa-star"></i>
+                            <span id="profileRating">0</span>
+                        </div>
+                        <div class="profile-id">#<span id="profileId">1</span></div>
+                    </div>
+                    
+                    <div class="profile-image-container">
+                        <div class="image-placeholder" id="imagePlaceholder">
+                            <i class="fas fa-user-circle"></i>
+                        </div>
+                        <img id="profileImage" class="profile-image" src="" alt="Профиль" style="display: none;">
+                    </div>
+                    
+                    <div class="profile-content">
+                        <h2 id="profileName" class="profile-name">Имя участника</h2>
+                        <p id="profileDescription" class="profile-description">Описание появится здесь...</p>
+                        
+                        <div class="profile-tags">
+                            <span class="tag"><i class="fas fa-graduation-cap"></i> Ученик</span>
+                            <span class="tag"><i class="fas fa-heart"></i> Участник битвы</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Прогресс-бар -->
+                    <div class="progress-container">
+                        <div class="progress-label">
+                            <span>Рейтинг доверия</span>
+                            <span id="progressPercent">0%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div id="progressFill" class="progress-fill"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Кнопки действий -->
+                <div class="action-buttons">
+                    <button id="dislikeBtn" class="btn-action btn-dislike pulse">
+                        <i class="fas fa-times"></i>
+                        <span>Дизлайк (2 балла)</span>
+                    </button>
+                    
+                    <button id="skipBtn" class="btn-action btn-skip">
+                        <i class="fas fa-forward"></i>
+                        <span>Пропустить</span>
+                        <div class="skip-counter">Осталось: <span id="skipCount">5</span></div>
+                    </button>
+                    
+                    <button id="likeBtn" class="btn-action btn-like pulse">
+                        <i class="fas fa-heart"></i>
+                        <span>Лайк (1 балл)</span>
+                    </button>
+                </div>
+
+                <!-- Статистика -->
+                <div class="battle-stats card">
+                    <h3><i class="fas fa-chart-line"></i> Статистика битвы</h3>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-value" id="totalVotes">0</div>
+                            <div class="stat-label">Всего голосов</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="likesCount">0</div>
+                            <div class="stat-label">Лайков</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="dislikesCount">0</div>
+                            <div class="stat-label">Дизлайков</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="skipsCount">0</div>
+                            <div class="stat-label">Пропусков</div>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
-        
-        <div class="table-info">
-            <div style="font-size: 14px; opacity: 0.6; margin-bottom: 10px;">
-                📊 GOOGLE SHEETS ДАННЫЕ:
-            </div>
-            <div class="table-id">
-                1R_cnve7dEk1MeqglL5VMIjHFOBZ1IhxgN-OaX29G5fI
-            </div>
-            <div style="font-size: 12px; opacity: 0.4; margin-top: 10px;">
-                Таблица готова. Следующий шаг: Google Apps Script
-            </div>
-        </div>
-        
-        <button class="btn" onclick="nextStep()">
-            ПЕРЕЙТИ К РАЗРАБОТКЕ
-        </button>
+        </main>
+
+        <!-- Уведомления -->
+        <div id="notification" class="notification"></div>
+
+        <!-- Футер -->
+        <footer class="footer">
+            <p>HEARTBATTLE © 2024 | Битва сердец вашей школы</p>
+            <p class="footer-hint">Каждый день +5 баллов для новых голосов</p>
+        </footer>
     </div>
 
-    <script>
-        // ID вашей таблицы
-        const SPREADSHEET_ID = '1R_cnve7dEk1MeqglL5VMIjHFOBZ1IhxgN-OaX29G5fI';
-        
-        function nextStep() {
-            alert('✅ Таблица подключена!\n\nID: ' + SPREADSHEET_ID + '\n\nСледующий шаг:\n1. Настроить Google Apps Script\n2. Создать фронтенд для голосования');
-            
-            // Сохраняем в консоль для разработки
-            console.log('HEARDBATTLE 2025 Project:');
-            console.log('- Spreadsheet ID:', SPREADSHEET_ID);
-            console.log('- Next: Create Google Apps Script backend');
-        }
-        
-        // Автоматическое обновление статуса
-        const statuses = [
-            '🚀 СТАТУС: РАЗРАБОТКА | ТАБЛИЦА ПОДКЛЮЧЕНА',
-            '⚡ СТАТУС: ДЕВОЧКИ vs ПАРНИ | ГОЛОСОВАНИЕ',
-            '🎭 СТАТУС: КАТЕГОРИИ | БАЛЛЫ | СКИПЫ',
-            '🏆 СТАТУС: ПОБЕДИТЕЛИ 2025 ГОДА'
-        ];
-        
-        let currentStatus = 0;
-        const statusElement = document.querySelector('.status');
-        
-        setInterval(() => {
-            currentStatus = (currentStatus + 1) % statuses.length;
-            statusElement.textContent = statuses[currentStatus];
-        }, 3000);
-    </script>
+    <!-- Скрипты -->
+    <script src="script.js"></script>
 </body>
 </html>
